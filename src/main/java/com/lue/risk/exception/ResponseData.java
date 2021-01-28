@@ -2,6 +2,12 @@ package com.lue.risk.exception;
 
 import java.io.Serializable;
 
+/**
+ * 自定义数据包
+ *
+ * @author qingjianfeng
+ * @date   2021-01-28
+ * */
 public class ResponseData<T> implements Serializable {
 
     /**

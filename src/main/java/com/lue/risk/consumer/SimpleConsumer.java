@@ -11,6 +11,9 @@ import java.io.IOException;
 @Component
 public class SimpleConsumer {
 
+    /**
+     * rabbitmq 点对点 消费者demo
+     * */
     @RabbitListener(queues = AMQPConstant.SIMPLE_QUEUE_NAME)
     public void readMessage(Message message, Channel channel) throws IOException {
         channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);

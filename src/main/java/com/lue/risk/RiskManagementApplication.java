@@ -15,7 +15,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.lue.risk.utils",
         "com.lue.risk.consumer",
         "com.lue.risk.exception",
-        "com.lue.risk.feign"})
+        "com.lue.risk.feign",
+        "com.lue.risk.interceptor"})
 @MapperScan("com.lue.risk.mapper")
 @EnableDiscoveryClient
 @EnableFeignClients

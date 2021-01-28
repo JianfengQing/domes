@@ -1,10 +1,12 @@
 package com.lue.risk.service.impl;
 
+import com.lue.risk.exception.BusinessException;
 import com.lue.risk.service.TestDemoService;
 import com.lue.risk.utils.RedisUtil;
 import com.lue.risk.constant.AMQPConstant;
 import com.lue.risk.entity.Person;
 import com.lue.risk.mapper.TestDemoMapper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
@@ -28,8 +30,8 @@ public class TestDemoServiceImpl implements TestDemoService {
 
     @Override
     public Person getPerson(String id) {
-        Person person = (Person) redisUtil.get(id);
-        person.getName();
+        if (StringUtils.isNotEmpty(id))
+        throw  new BusinessException(200, "获取人员失败  异常抛出成功");
         return testDemoMapper.getPerson(id);
     }
 
