@@ -1,5 +1,6 @@
-package com.lue.risk.service;
+package com.lue.risk.service.impl;
 
+import com.lue.risk.service.TestDemoService;
 import com.lue.risk.utils.RedisUtil;
 import com.lue.risk.constant.AMQPConstant;
 import com.lue.risk.entity.Person;
@@ -12,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 
 @Service
-public class TestDemoServiceImpl implements TestDemoService{
+public class TestDemoServiceImpl implements TestDemoService {
     @Resource
     private TestDemoMapper testDemoMapper;
 
