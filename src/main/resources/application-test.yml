@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: riskservice
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://DESKTOP-NGQHGG6\SQLSERVER;DatabaseName=business_db
+    username: sa
+    password: 20210122Aa
+    druid:
+      initial-size: 500   #初始化连接池大小
+      min-idle: 5       #连接池中保留最小连接数
+      max-active: 500    #连接池中保留最大连接数
+      max-wait: 60000   #获取连接等待超时
+      time-between-eviction-runs-millis: 60000  #检测需要关闭的空闲连接 检测时间 单位是毫秒
+      min-evictable-idle-time-millis: 300000  #连接空闲时间
+      test-while-idle: true              #是否开启连接空闲检测
+      validation-query: select '1'       #检查sql
+      test-on-borrow: false              #申请连接时validationquery 是否有效  一般线上不开启
+      test-on-return: false              #归还连接时validationquery 是否有效  一般线上不开启
+      pool-prepared-statements: true     #开启PSCache 会消耗一定的内存  但是提高性能
+      max-open-prepared-statements: 20   #每个connection PSCache 缓存语句的数量
+
+  #consul 配置
+  cloud:
+    consul:
+      host: 192.168.0.98
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        enabled: true   #是否启用服务发现
+        register: true    #是否注册服务
+        deregister: true   #服务停止时取消注册
+        prefer-ip-address: true   #表示注册时使用IP而不是hostname
+        health-check-interval: 10s   #健康检查频率
+        health-check-path: /health    #健康检查路径
+        health-check-critical-timeout: 10s   #健康检查失败后多久取消注册
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}     #服务注册标识
+  #redis
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    timeout: 5000ms
+    password:
+    lettuce:
+      pool:
+        max-active: 50
+        max-wait: 3000ms
+        max-idle: 20
+        min-idle: 5
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 20000
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/business
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+mybatis:
+  mapper-locations: classpath:mapping/*.Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

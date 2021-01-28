@@ -20,7 +20,6 @@ public class CrossInterceptor implements HandlerInterceptor {
         response.setHeader("Access-Control-Allow-Headers", "Authorization");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Max-Age", "3600");
-        System.out.println("------------------------------拦截器--------------------------------");
 
         // response.setHeader("Access-Control-Allow-Headers", "Authorization"); //Token 校验
         //response.setHeader("Access-Control-Allow-Origin","Origin");

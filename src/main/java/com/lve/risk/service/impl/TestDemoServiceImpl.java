@@ -2,13 +2,12 @@ package com.lve.risk.service.impl;
 
 import com.lve.risk.exception.BusinessException;
 import com.lve.risk.service.TestDemoService;
-import com.lve.risk.utils.RedisUtil;
+import com.lve.risk.utils.RedisUtils;
 import com.lve.risk.constant.AMQPConstant;
 import com.lve.risk.entity.Person;
 import com.lve.risk.mapper.TestDemoMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ public class TestDemoServiceImpl implements TestDemoService {
     private MongoTemplate mongoTemplate;
 
     @Resource
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Override
     public Person getPerson(String id) {
@@ -39,7 +38,7 @@ public class TestDemoServiceImpl implements TestDemoService {
     @Override
     public void addPerson(Person person) {
         person.setBirthday(new Date());
-        redisUtil.set(person.getName(),person,60 * 5);
+        redisUtils.set(person.getName(),person,60 * 5);
         mongoTemplate.save(person);
         rabbitTemplate.convertAndSend(AMQPConstant.SIMPLE_QUEUE_NAME,person);
         testDemoMapper.addPerson(person);
