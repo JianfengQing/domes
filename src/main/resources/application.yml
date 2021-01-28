@@ -4,4 +4,4 @@ server:
     context-path: /
 spring:
   profiles:
-    active: test
+    active: local
