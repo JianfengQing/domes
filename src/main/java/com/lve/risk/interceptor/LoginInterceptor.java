@@ -6,34 +6,27 @@ import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.interfaces.Claim;
 import com.lve.risk.constant.ExceptionCode;
 import com.lve.risk.constant.RedisKey;
+import com.lve.risk.constant.ResponseMessage;
 import com.lve.risk.exception.BusinessException;
 import com.lve.risk.exception.ResponseData;
-import com.lve.risk.exception.ResultData;
-import com.lve.risk.utils.DateUtils;
+import com.lve.risk.exception.ResponseResultData;
 import com.lve.risk.utils.HttpClientUtils;
 import com.lve.risk.utils.JWTUtils;
 import com.lve.risk.utils.RedisUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class LoginInterceptor implements HandlerInterceptor {
-
-    @Value("${spring.application.name}")
-    private String serviceName;
 
     @Value("${refresh.url}")
     private String refreshUrl;
@@ -61,7 +54,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             String userId = map.get("sub").asString();
             Map<String, Object> params = new HashMap<String, Object>(5);
             params.put("clientId", clientId);
-            String refreshTokenKey = String.format(RedisKey.Refresh_Token, userId);
+            String refreshTokenKey = String.format(RedisKey.REFRESH_TOKEN, userId);
             String authorizationToken = (String) redisUtils.get(refreshTokenKey);
             params.put("refreshToken", authorizationToken);
             String newToken = httpClientUtils.postSendMsg(refreshUrl, JSON.toJSONString(params));
@@ -72,11 +65,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             String refreshToken = (String) newTokenMap.get("refresh_token");
             redisUtils.set(refreshTokenKey, refreshToken, 60 * 60 * 24 * 30);
             String accessToken = (String) newTokenMap.get("access_token");
-            ckeckPermissios(JWTUtils.parseToken(accessToken));
-            responseWriterRefreshToken(response, userId, ResponseData.success(200, "刷新Token成功", accessToken));
-            return true;
+            responseWriterRefreshToken(response, userId, ResponseData.success(200, ResponseMessage.TOKEN_REFRESH_SUCCESSFULLY, accessToken));
         }
-        ckeckPermissios(map);
         return true;
     }
 
@@ -90,31 +80,15 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     }
 
-    //访问鉴权
-    private void ckeckPermissios(Map<String, Claim> map){
-        String roleId = map.get("role").asString();
-        String permissioRole = String.format(RedisKey.Permission_Role, roleId);
-        String roles = (String) redisUtils.get(permissioRole);
-        if (StringUtils.isEmpty(roles)) {
-            throw new BusinessException(ExceptionCode.NO_ACCESS_CODE, ExceptionCode.NO_ACCESS_MSG);
-        }
-        List<String> roleList = JSONArray.parseArray(roles, String.class);
-        // roleList.contains()
-        List auds = map.get("aud").asList(String.class);
-        if (!auds.contains(serviceName)) {
-            throw new BusinessException(ExceptionCode.NO_SERVICE_ACCESS_CODE, ExceptionCode.NO_SERVICE_ACCESS_MSG);
-        }
-    }
-
     //token 过期
     private void responseWriterExpire(HttpServletResponse response) {
-        ResultData resultDataError = new ResultData();
+        ResponseResultData resultDataError = new ResponseResultData();
         resultDataError.setCode(401);
         resultDataError.setDetailes("");
         resultDataError.setMessage("");
         resultDataError.setValidationErrors(null);
-        resultDataError.setError(new ResultData());
-        ResultData resultData = new ResultData();
+        resultDataError.setError(new ResponseResultData());
+        ResponseResultData resultData = new ResponseResultData();
         resultData.setCode(401);
         resultData.setDetailes("");
         resultData.setMessage("");

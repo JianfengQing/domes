@@ -1,5 +1,6 @@
 package com.lve.risk.controller;
 
+import com.lve.risk.annotation.Authority;
 import com.lve.risk.entity.Person;
 import com.lve.risk.exception.ResponseData;
 import com.lve.risk.feign.TestDemoFeign;
@@ -43,6 +44,7 @@ public class TestDemoController {
         return ResponseData.success();
     }
 
+    @Authority(authority = "test")
     @GetMapping(value = "persons/{id}")
     public ResponseData<Person> getPerson(@PathVariable("id") String id){
         return ResponseData.success(200, "success", testDemoService.getPerson(id));

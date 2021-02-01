@@ -3,7 +3,7 @@ package com.lve.risk.exception;
 
 import java.util.List;
 
-public class ResultData {
+public class ResponseResultData {
 
     private Integer code;
 
@@ -13,7 +13,7 @@ public class ResultData {
 
     private List<String> ValidationErrors;
 
-    private ResultData Error;
+    private ResponseResultData Error;
 
     public Integer getCode() {
         return code;
@@ -47,11 +47,11 @@ public class ResultData {
         ValidationErrors = validationErrors;
     }
 
-    public ResultData getError() {
+    public ResponseResultData getError() {
         return Error;
     }
 
-    public void setError(ResultData error) {
+    public void setError(ResponseResultData error) {
         Error = error;
     }
 }
