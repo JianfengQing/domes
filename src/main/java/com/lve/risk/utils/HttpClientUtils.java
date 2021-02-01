@@ -117,7 +117,7 @@ public class HttpClientUtils {
             CloseableHttpResponse response = this.httpClient.execute(httpPost);
 
             // 判断状态码是否为200
-            if (response.getStatusLine().getStatusCode() == 401) {
+            if (response.getStatusLine().getStatusCode() == 200) {
                 // 返回响应体的内容
                 return EntityUtils.toString(response.getEntity(), "UTF-8");
             }

@@ -66,7 +66,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             params.put("refreshToken", authorizationToken);
             String newToken = httpClientUtils.postSendMsg(refreshUrl, JSON.toJSONString(params));
             if (StringUtils.isEmpty(newToken)) {
-                throw new BusinessException(ExceptionCode.NEW_TOKEN_NOT_IS_EXIST, "身份信息已过期,请您重新登陆");
+                throw new BusinessException(ExceptionCode.NEW_TOKEN_NOT_IS_EXIST_CODE, ExceptionCode.NEW_TOKEN_NOT_IS_EXIST_MSG);
             }
             Map<String, Object> newTokenMap = (Map<String, Object>) JSONObject.parse(newToken);
             String refreshToken = (String) newTokenMap.get("refresh_token");
@@ -90,23 +90,23 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     }
 
+    //访问鉴权
     private void ckeckPermissios(Map<String, Claim> map){
-        //权限检查
         String roleId = map.get("role").asString();
         String permissioRole = String.format(RedisKey.Permission_Role, roleId);
         String roles = (String) redisUtils.get(permissioRole);
         if (StringUtils.isEmpty(roles)) {
-            throw new BusinessException(ExceptionCode.ROLE_NOT_IS_EXIST, "无访问权限");
+            throw new BusinessException(ExceptionCode.NO_ACCESS_CODE, ExceptionCode.NO_ACCESS_MSG);
         }
         List<String> roleList = JSONArray.parseArray(roles, String.class);
         // roleList.contains()
-        //服务权限
         List auds = map.get("aud").asList(String.class);
         if (!auds.contains(serviceName)) {
-            throw new BusinessException("200", "无访问权限");
+            throw new BusinessException(ExceptionCode.NO_SERVICE_ACCESS_CODE, ExceptionCode.NO_SERVICE_ACCESS_MSG);
         }
     }
 
+    //token 过期
     private void responseWriterExpire(HttpServletResponse response) {
         ResultData resultDataError = new ResultData();
         resultDataError.setCode(401);
@@ -134,6 +134,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         out.append(res.toString());
     }
 
+    //刷新token
     private void responseWriterRefreshToken(HttpServletResponse response, String userId, ResponseData responseData) {
         response.setStatus(401);
         response.setHeader("NewToken", "Member_Refresh_Token_" + userId);
