@@ -1,3 +1,7 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
 spring:
   application:
     name: RiskService
@@ -31,11 +35,12 @@ spring:
         enabled: true   #是否启用服务发现
         register: true    #是否注册服务
         deregister: true   #服务停止时取消注册
-        prefer-ip-address: false   #表示注册时使用IP而不是hostname
+        prefer-ip-address: true   #表示注册时使用IP而不是hostname
         health-check-interval: 10s   #健康检查频率
         health-check-path: /health    #健康检查路径
         health-check-critical-timeout: 10s   #健康检查失败后多久取消注册
         instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}     #服务注册标识
+
   #redis
   redis:
     database: 0
@@ -47,7 +52,7 @@ spring:
       pool:
         max-active: 50
         max-wait: 3000ms
-        max-idle: 20
+        maxipconfig-idle: 20
         min-idle: 5
   rabbitmq:
     host: 192.168.0.98
@@ -65,3 +70,15 @@ mybatis:
   mapper-locations: classpath:mapping/*.Mapper.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+http:
+  maxTotal: 100                           # 最大连接数
+  defaultMaxPerRoute: 20                  # 并发数
+  connectTimeout: 1000                    # 创建连接最长时间
+  connectionRequestTimeout: 500           # 从连接池中获取到连接的最长时间
+  socketTimeout: 10000                    # 数据传输的最长时间
+  staleConnectionCheckEnabled: true       # 提交请求前测试连接是否可用
+
+#刷新Token
+refresh:
+  url: http://192.168.0.98:8888/api/login/refreshtoken

@@ -1,5 +1,7 @@
 package com.lve.risk.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,12 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
  * */
 @RestController
 public class HealthController {
+
+    Logger logger = LoggerFactory.getLogger(HealthController.class);
+
     /**
      * consul 健康检查
      * */
     @GetMapping("/health")
     public String Health() {
-        System.out.println("health 心跳正常......");
+        logger.info("----------------------------------------------RiskService在线----------------------------------------");
         return "OK";
     }
 }
