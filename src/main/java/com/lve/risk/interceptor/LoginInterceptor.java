@@ -49,6 +49,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             responseWriterExpire(response);
             return false;
         }
+
+
         if (timeDifference < 0 && timeDifference >= -5) {
             String clientId = map.get("client_id").asString();
             String userId = map.get("sub").asString();
